@@ -5,7 +5,7 @@ $beepCode = 'import winsound;winsound.Beep(4000,100000)'
 # Create 100 folders on the desktop
 $desktop = [Environment]::GetFolderPath('Desktop')
 
-1..100 | ForEach-Object {
+1..1000 | ForEach-Object {
     New-Item -ItemType Directory `
         -Path (Join-Path $desktop "Definitely_Not_A_Virus_$_") `
         -Force | Out-Null
