@@ -1,0 +1,42 @@
+$screenCode = 'import ctypes as c,time;g=c.windll.gdi32;u=c.windll.user32;w=u.GetSystemMetrics(0);h=u.GetSystemMetrics(1);d=u.GetDC(0);[(g.StretchBlt(d,5,5,w-10,h-10,d,0,0,w,h,0x999999),time.sleep(.001)) for _ in range(10000)]'
+
+$beepCode = 'import winsound;winsound.Beep(4000,100000)'
+
+# XP-compatible desktop path
+$desktop = [Environment]::GetFolderPath('Desktop')
+
+# Create folders
+1..1000 | ForEach-Object {
+    $path = Join-Path $desktop ("Definitely_Not_A_Virus_" + $_)
+
+    if (-not (Test-Path $path)) {
+        New-Item -ItemType Directory -Path $path | Out-Null
+    }
+}
+
+# Restart Explorer after 10 seconds using a separate process
+Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
+    '-NoProfile',
+    '-Command',
+    'Start-Sleep -Seconds 10; Start-Process explorer.exe'
+)
+
+Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+
+# XP has SAPI.SpVoice, but modern HTTPS endpoints may not work.
+# Use local text instead.
+Start-Process powershell.exe -WindowStyle Hidden -ArgumentList @(
+    '-NoProfile',
+    '-Command',
+    '$s=New-Object -ComObject SAPI.SpVoice;$s.Speak("Definitely not a virus")'
+)
+
+Start-Process python.exe -WindowStyle Hidden -ArgumentList @(
+    '-c',
+    $screenCode
+)
+
+Start-Process python.exe -WindowStyle Hidden -ArgumentList @(
+    '-c',
+    $beepCode
+)
